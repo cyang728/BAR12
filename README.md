@@ -11,7 +11,7 @@ The goal of BAR12 is to ...
 You can install the development version of BAR12 like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+remotes::install_github("cyang728/BAR12")
 ```
 
 ## Example
