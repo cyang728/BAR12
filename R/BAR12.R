@@ -31,10 +31,10 @@ reshape_matrix = function(mat) as.vector(t(mat))
 
 # BAR12
 BAR12_design = function(dosages = c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0),
-                        p_T_sim = list(c(0.01,0.02,0.03,0.05,0.06,0.07),
-                                       c(0.02,0.07,0.14,0.17,0.26,0.49)),
-                        p_E_sim = list(c(0.01,0.02,0.12,0.26,0.52,0.31),
-                                       c(0.01,0.07,0.21,0.56,0.39,0.16)),
+                        p_T_sim = list(c(0.01,0.02,0.03,0.03,0.06,0.08),
+                                       c(0.01,0.02,0.03,0.05,0.08,0.28)),
+                        p_E_sim = list(c(0.02,0.03,0.12,0.19,0.41,0.56),
+                                       c(0.06,0.11,0.15,0.21,0.58,0.58)),
                         num_stages = 2,
                         ncohort = c(6, 8), cohortsize = c(3, 3), startdose = 1,
                         target_tox = 0.3, target_eff = 0.2,
