@@ -4,10 +4,8 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of BAR12 is to guide seamless, early-phase dose-finding trials for cell therapies even when manufacturing “tweaks” (e.g., changes to culture duration, cytokine mix, or donor criteria) are introduced mid-study. 
-Such tweaks preserve treatment continuity but can still shift toxicity–efficacy relationships, so the design must adapt without restarting the trial.
-
-BAR12 design meets this need with a first-order autoregressive model and spike-and-slab priors that distinguish pre-tweak from post-tweak parameters. 
+The goal of **BAR12 design** is to enable seamless dose-finding in early-phase cell therapy trials that incorporate mid-trial manufacturing modifications—or *tweaks*—such as changes to cell culture duration, cytokine cocktails, or donor criteria. 
+BAR12 addresses this by using a Bayesian autoregressive model with spike-and-slab priors to distinguish between pre- and post-tweak outcome distributions, allowing dynamic borrowing of information while accounting for possible shifts.
 
 ## 📦 Installation
 
