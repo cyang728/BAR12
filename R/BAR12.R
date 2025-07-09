@@ -1,3 +1,56 @@
+#' Simulate a BAR12 Design Trial
+#'
+#' @description
+#' Simulates a multi-stage Bayesian adaptive randomized clinical trial for joint
+#' toxicity and efficacy outcomes. The function uses pre-compiled Stan models
+#' to perform Bayesian inference at each stage and a utility function to guide
+#' dose allocation.
+#'
+#' @param dosages A numeric vector of standardized dosages being investigated.
+#' @param p_T_sim A list of vectors, where each vector contains the true toxicity probabilities for a stage.
+#' @param p_E_sim A list of vectors, where each vector contains the true efficacy probabilities for a stage.
+#' @param num_stages The total number of stages in the trial.
+#' @param ncohort A vector specifying the number of cohorts for each stage.
+#' @param cohortsize A vector specifying the size of each cohort for each stage.
+#' @param startdose The index of the starting dose level.
+#' @param target_tox The target probability for toxicity.
+#' @param target_eff The lower limit of efficacy.
+#' @param cutoff_tox The probability cutoff for the safety rule (doses exceeding this are deemed too toxic).
+#' @param cutoff_eff The probability cutoff for the futility rule (doses above this are deemed futile).
+#' @param w00 Utility weight for no toxicity and no efficacy.
+#' @param w01 Utility weight for no toxicity and efficacy.
+#' @param w10 Utility weight for toxicity and no efficacy.
+#' @param w11 Utility weight for toxicity and efficacy.
+#' @param max_allocate_dose The maximum number of patients that can be allocated to any single dose level.
+#' @param n_mc_epsilon The number of Monte Carlo samples for marginalizing over the random effect epsilon.
+#' @param kappa A parameter to control the randomness of dose allocation. `kappa = 0` is simple randomization; higher values favor doses with higher utility.
+#' @param L The number of "best" doses to randomize patients to in the later stages (k > 1).
+#' @param seed A random seed to ensure reproducibility.
+#' @param print.out A logical indicating whether to print trial updates for each cohort.
+#'
+#' @return A list containing two elements:
+#' \itemize{
+#'   \item{\strong{`data`}: A data frame with the complete trial history and final estimates for each dose.}
+#'   \item{\strong{`best_dose`}: An integer representing the index of the recommended optimal dose.}
+#' }
+#'
+#' @import rstan
+#' @importFrom stats rnorm runif var
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'   # Run a standard two-stage trial simulation
+#'   simulation_result <- BAR12_design(seed = 42)
+#'
+#'   # View the final summary data
+#'   print(simulation_result$data)
+#'
+#'   # Get the final recommended optimal dose
+#'   cat("Final Recommended Dose Index:", simulation_result$best_dose, "\n")
+#' }
+
 # Stan Models
 path_stage1 = system.file("stan/Stage1_prior.stan", package = "BAR12")
 path_stagek = system.file("stan/Stagek_prior.stan", package = "BAR12")
