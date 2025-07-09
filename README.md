@@ -22,8 +22,8 @@ remotes::install_github("cyang728/BAR12")
 
 ### Inputs
 
-**dosages:** Numeric vector. The standardized dosages being investigated in the trial.
-**p_T_sim:** List of numeric vectors. The true toxicity probabilities for each dose at each stage, used for outcome simulation.
+- **dosages:** Numeric vector. The standardized dosages being investigated in the trial.
+- **p_T_sim:** List of numeric vectors. The true toxicity probabilities for each dose at each stage, used for outcome simulation.
 **p_E_sim:** List of numeric vectors. The true efficacy probabilities for each dose at each stage, used for outcome simulation.
 **num_stages:** Integer. The total number of stages in the trial design.
 **ncohort:** Numeric vector. The number of cohorts to be enrolled in each stage.
