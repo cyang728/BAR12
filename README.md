@@ -6,7 +6,7 @@
 
 The goal of BAR12 is to ...
 
-## 🔧 Installation
+## 📦 Installation
 
 You can install the development version of BAR12:
 
@@ -14,46 +14,44 @@ You can install the development version of BAR12:
 remotes::install_github("cyang728/BAR12")
 ```
 
-## Functions
+## 🔧 Functions
 
 ### `BAR12_design()`
-
-### Description
 
 ### Inputs
 
 - **dosages:** Numeric vector. The standardized dosages being investigated in the trial.
 - **p_T_sim:** List of numeric vectors. The true toxicity probabilities for each dose at each stage, used for outcome simulation.
-**p_E_sim:** List of numeric vectors. The true efficacy probabilities for each dose at each stage, used for outcome simulation.
-**num_stages:** Integer. The total number of stages in the trial design.
-**ncohort:** Numeric vector. The number of cohorts to be enrolled in each stage.
-**cohortsize:** Numeric vector. The number of patients per cohort in each stage.
-**startdose:** Integer. The index of the dose level for the first cohort.
-**target_tox:** Numeric. The target toxicity rate, used for decision-making.
-**target_eff:** Numeric. The target efficacy rate.
-**cutoff_tox:** Numeric. The safety cutoff; the posterior probability of toxicity exceeding `target_tox` must not be greater than this value.
-**cutoff_eff:** Numeric. The futility cutoff; the posterior probability of efficacy being less than `target_eff` must not be greater than this value.
-**w00:** Numeric. Utility weight for the outcome of no toxicity and no efficacy.
-**w01:** Numeric. Utility weight for the outcome of no toxicity and efficacy.
-**w10:** Numeric. Utility weight for the outcome of toxicity and no efficacy.
-**w11:** Numeric. Utility weight for the outcome of toxicity and efficacy.
-**max_allocate_dose:** Integer. The maximum number of patients that can be assigned to a single dose level.
-**n_mc_epsilon:** Integer. The number of Monte Carlo samples used to integrate over the random effect parameter.
-**kappa:** Numeric. A randomization parameter controlling the trade-off between exploration and exploitation. Higher values make allocation favor doses with higher utility.
-**L:** Integer. The number of best-performing doses to which patients can be randomized in later stages.
-**seed:** Integer. A random seed for ensuring the reproducibility of simulations.
-**print.out:** Logical. If `TRUE`, prints live updates for each cohort.
+- **p_E_sim:** List of numeric vectors. The true efficacy probabilities for each dose at each stage, used for outcome simulation.
+- **num_stages:** Integer. The total number of stages in the trial design.
+- **ncohort:** Numeric vector. The number of cohorts to be enrolled in each stage.
+- **cohortsize:** Numeric vector. The number of patients per cohort in each stage.
+- **startdose:** Integer. The index of the dose level for the first cohort.
+- **target_tox:** Numeric. The target toxicity rate, used for decision-making.
+- **target_eff:** Numeric. The target efficacy rate.
+- **cutoff_tox:** Numeric. The safety cutoff; the posterior probability of toxicity exceeding `target_tox` must not be greater than this value.
+- **cutoff_eff:** Numeric. The futility cutoff; the posterior probability of efficacy being less than `target_eff` must not be greater than this value.
+- **w00:** Numeric. Utility weight for the outcome of no toxicity and no efficacy.
+- **w01:** Numeric. Utility weight for the outcome of no toxicity and efficacy.
+- **w10:** Numeric. Utility weight for the outcome of toxicity and no efficacy.
+- **w11:** Numeric. Utility weight for the outcome of toxicity and efficacy.
+- **max_allocate_dose:** Integer. The maximum number of patients that can be assigned to a single dose level.
+- **n_mc_epsilon:** Integer. The number of Monte Carlo samples used to integrate over the random effect parameter.
+- **kappa:** Numeric. A randomization parameter controlling the trade-off between exploration and exploitation. Higher values make allocation favor doses with higher utility.
+- **L:** Integer. The number of best-performing doses to which patients can be randomized in later stages.
+- **seed:** Integer. A random seed for ensuring the reproducibility of simulations.
+- **print.out:** Logical. If `TRUE`, prints live updates for each cohort.
 
 ### Outputs
 
 A list with the following elements:
-**data:** A data frame containing the complete trial history and final posterior estimates for each dose level.
-**best_dose:** The index of the final recommended optimal dose based on the highest utility among all admissible doses. Returns `0` if no dose is selected.
+- **data:** A data frame containing the complete trial history and final posterior estimates for each dose level.
+- **best_dose:** The index of the final recommended optimal dose based on the highest utility among all admissible doses. Returns `0` if no dose is selected.
 
 
-## Example
+## 🚀 Example
 
-This is a basic example which shows you how to solve a common problem:
+The following example demonstrates how to use `BAR12_design()` to simulate a BAR12 trial.
 
 ``` r
 library(BAR12)
