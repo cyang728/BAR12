@@ -1,0 +1,128 @@
+library(bayesplot)
+library(ggplot2)
+
+# ── Parameter labels: plotmath syntax for facet strips ───────
+# These render correctly in PDF via label_parsed()
+.par_labels <- c(
+  alpha0         = "beta[0]",          # β₀
+  alpha1         = "beta[1]",          # β₁
+  beta0          = "gamma[0]",         # γ₀
+  betaL          = "gamma[1]",         # γ₁
+  betaR          = "gamma[2]",         # γ₂
+  beta2          = "gamma[3]",         # γ₃
+  beta_peak      = "tau",              # τ
+  sigma2_epsilon = "sigma[epsilon]^2"  # σ²ε
+)
+
+# ── Okabe-Ito colorblind-safe palette (4 chains) ─────────────
+# bayesplot::color_scheme_set() needs exactly 6 values:
+# light1, light2, mid1, mid2, dark1, dark2
+# For trace plots bayesplot cycles through positions 1,3,5 (darks) + 2,4,6
+# so we feed 4 hues mapped across the 6 slots
+.set_chain_colors <- function() {
+  bayesplot::color_scheme_set(c(
+    "#5DA8D6",   # chain 1 light  (blue)
+    "#F5C842",   # chain 2 light  (amber)
+    "#0072B2",   # chain 1 dark   (blue)
+    "#E69F00",   # chain 2 dark   (amber)
+    "#009E73",   # chain 3        (teal)
+    "#CC79A7"    # chain 4        (mauve)
+  ))
+}
+
+#' Trace plot and rank plot from a stanfit object
+#'
+#' @param stan_fit   stanfit from BAR12_design()$stan_fits[[k]]
+#' @param pars       Stan parameter names to plot
+#' @param title      Plot title (centered). NULL or "" to suppress.
+#' @param save_path  Path prefix without extension. NULL = print only.
+#' @param width      PDF width in inches (default 10)
+#' @param height     PDF height in inches (default 14)
+#' @param dpi        Resolution for saved file (default 300)
+
+# ── Helper: set line width directly on ggplot layers ─────────
+# Works regardless of bayesplot/ggplot2 version because it bypasses
+# geom defaults and directly mutates the layer's aes_params.
+.set_line_width <- function(p, lwd = 0.8) {
+  for (i in seq_along(p$layers)) {
+    geom <- p$layers[[i]]$geom
+    if (inherits(geom, "GeomLine") || inherits(geom, "GeomPath")) {
+      p$layers[[i]]$aes_params[["linewidth"]] <- lwd
+      p$layers[[i]]$aes_params[["size"]]      <- NULL  # remove deprecated key
+    }
+  }
+  p
+}
+
+plot_mcmc_diagnostics <- function(stan_fit,
+                                  pars,
+                                  title      = NULL,
+                                  save_path  = NULL,
+                                  width      = 10,
+                                  height     = 14,
+                                  dpi        = 300) {
+  
+  # ── Rename draws dims to plotmath labels ─────────────────
+  draws <- as.array(stan_fit, pars = pars)
+  display_pars <- ifelse(pars %in% names(.par_labels),
+                         .par_labels[pars], pars)
+  dimnames(draws)$parameters <- display_pars
+  
+  # ── Set chain colors before plotting ─────────────────────
+  .set_chain_colors()
+  
+  show_title <- !is.null(title) && nchar(trimws(title)) > 0
+  
+  # ── Shared theme ─────────────────────────────────────────
+  base_theme <- theme_bw(base_size = 12) +
+    theme(
+      axis.text    = element_text(size = 16),
+      axis.title   = element_text(size = 16),
+      strip.text   = element_text(size = 13),
+      plot.title   = element_text(size = 14, hjust = 0.5)
+    )
+  
+  # ── Trace plot ───────────────────────────────────────────
+  p_trace <- mcmc_trace(
+    draws,
+    pars       = display_pars,
+    facet_args = list(nrow     = 4,
+                      ncol     = 2,
+                      labeller = label_parsed)
+  ) + base_theme +
+    if (show_title) ggtitle(paste0(title, " -- Trace plot")) else NULL
+  
+  # ── Rank plot ────────────────────────────────────────────
+  p_rank <- mcmc_rank_overlay(
+    draws,
+    pars       = display_pars,
+    facet_args = list(nrow     = 4,
+                      ncol     = 2,
+                      labeller = label_parsed)
+  ) +
+    ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(linewidth = 1.5))) +
+    base_theme +
+    if (show_title) ggtitle(paste0(title, " -- Rank plot")) else NULL
+  
+  # ── Apply line width to both plots ──────────────────────
+  p_trace <- .set_line_width(p_trace, lwd = 0.8)
+  p_rank  <- .set_line_width(p_rank,  lwd = 0.8)
+  
+  # ── Save ─────────────────────────────────────────────────
+  if (!is.null(save_path)) {
+    dir.create(dirname(save_path), recursive = TRUE, showWarnings = FALSE)
+    
+    trace_file <- paste0(save_path, "_trace.pdf")
+    ggsave(trace_file, p_trace, width = width, height = height, dpi = dpi)
+    cat("Trace plot saved:", trace_file, "\n")
+    
+    rank_file <- paste0(save_path, "_rank.pdf")
+    ggsave(rank_file, p_rank, width = width, height = height, dpi = dpi)
+    cat("Rank plot  saved:", rank_file, "\n")
+  }
+  
+  print(p_trace)
+  print(p_rank)
+  
+  invisible(list(trace = p_trace, rank = p_rank))
+}
